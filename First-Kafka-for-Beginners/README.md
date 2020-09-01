@@ -20,11 +20,12 @@ Using Kafka you can have 1 million messages per second.
 **Zookeeper:** distributed, open source configuration and synchronization service. All the configurations of the components are saved in Zookeeper.
 <img src="architecture.JPG">
 
-** Setup and Installation:**
+**Setup and Installation:**
+
 Followed the docs and installed on AWS. 
 
-Conf file for Kafka server in named **server.properties**
-Conf file for zookeeper is called **zookeeper.properties**
+- Conf file for Kafka server in named **server.properties**
+- Conf file for zookeeper is called **zookeeper.properties**
 
 We need to put our server address on this like at server.properties:
 ```
@@ -115,13 +116,27 @@ Consumers consume messages(data) from partitions inside topics. Each consumer MU
 For creating a consumer, we need to define some configuration, like topic, bootstrap_server, and group_id. 
 - Consumer groups run as separate processes. 
 - consumers of a consumer group can be on different brokers or nodes of a kafka cluster.
-<img src="consumers_different_nodes.JPG">
+<img src="consumers_different_nodes.jpg">
 
 To remove a topic:
 ```
 .\bin\windows\kafka-topics.bat --zookeeper localhost:2181 --delete --topic user_registration_3
 ```
+#### Example4 (One Topic, One Partition, One Consumer)
+Here is the code for the consumer:
+```python
+from kafka import KafkaConsumer
+import json
 
+if __name__ == "__main__":
+    consumer = KafkaConsumer("registered_user", 
+                             bootstrap_servers='localhost:9092', 
+                             auto_offset_reset='earliest',
+                             group_id='counsmer_group_a')
+    print('starting the consumer...')
+    for msg in consumer:
+        print('registered user: {}'.format(json.loads(msg.value)))
+```
 
 
 
